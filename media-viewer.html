@@ -1,0 +1,44 @@
+
+<div id="media-viewer">
+
+    <div class="image-wrapper">
+        <div class="image" style="background-image: url()">
+
+        </div>
+
+        <img src="{{viewerMediaInfo.images.normal}}" />
+    </div>
+
+
+    <div class="info">
+        <a href="javascript:" class="close"><i class="icon-cancel-1"></i></a>
+
+
+        <div class="padding">
+            <div class="user">
+                <div class="avatar" style="background-image: url({{viewerMediaInfo._embedded.uploader.avatar_url}})"></div>
+                <h2>
+                    <a target="_blank" href="{{viewerMediaInfo.socialProfileUrl}}">
+                        {{viewerMediaInfo._embedded.uploader.username | limitTo: charactersLimit}}{{viewerMediaInfo._embedded.uploader.username.length > charactersLimit ? '...' : ''}}
+                    </a>
+                </h2>
+
+            </div>
+
+            <a class="original-source" target="_blank" ng-if="viewerMediaInfo.original_source" href="{{viewerMediaInfo.original_source}}">view on {{viewerMediaInfo.source}}</a>
+
+            <p class="caption">{{viewerMediaInfo.caption}}</p>
+
+            <div class="location" ng-if="viewerMediaInfo.location" >
+                <h2>Location</h2>
+
+                <iframe class="map"width="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" ng-src="{{viewerMediaInfo.mapIframeSrc | trustAsResourceUrl}}"></iframe>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="media-viewer-overlay"></div>
