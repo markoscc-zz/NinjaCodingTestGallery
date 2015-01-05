@@ -3,13 +3,14 @@ var olapicGallery = angular.module('olapicGallery', ['ngAnimate']);
 var counter = 0;
 var firstRun = true;
 
+
 olapicGallery.filter('trustAsResourceUrl', ['$sce', function($sce) {
     return function(val) {
         return $sce.trustAsResourceUrl(val);
     };
 }]);
 
-olapicGallery.directive('galleryItemDirective', function() {
+olapicGallery.directive('mediaItemDirective', function() {
     return function($scope, $element, $attrs) {
 
         $element.addClass('item-' + counter);
@@ -25,7 +26,7 @@ olapicGallery.directive('galleryItemDirective', function() {
         }
 
         if (counter == 6) {
-            jQuery('#gallery-wrapper').find('.item-6').after('<div class="media-item-wrapper item-7 main-square"><div class="media-item"><h1>Headphones and Headsets</h1></div></div>');
+            angular.element('#gallery-wrapper .item-6').after('<div class="media-item-wrapper item-7 main-square"><div class="media-item"><h1>Headphones and Headsets</h1></div></div>');
             counter = 7;
         }
 
@@ -38,7 +39,7 @@ olapicGallery.directive('galleryItemDirective', function() {
         }
 
         $element.find('img').on('load', function() {
-            var img = jQuery(this).attr('src');
+            var img = angular.element(this).attr('src');
             $element.find('.media-item').css('background-image', 'url(' + img + ')')
                 .velocity({
                     opacity: 1
@@ -76,7 +77,7 @@ olapicGallery.directive('galleryItemDirective', function() {
             counter = 0;
 
             if (firstRun) {
-                jQuery('.main-square').velocity({
+                angular.element('.main-square').velocity({
                     rotateX: ['180deg', '180deg'],
                     rotateY: ['180deg', '90deg'],
                     rotateZ: ['225deg', '225deg'],
@@ -89,7 +90,7 @@ olapicGallery.directive('galleryItemDirective', function() {
 
                 firstRun = false;
             } else {
-                jQuery('.main-square').velocity({
+                angular.element('.main-square').velocity({
                     rotateX: ['180deg', '180deg'],
                     rotateY: ['180deg', '180deg'],
                     rotateZ: ['225deg', '225deg'],
@@ -100,7 +101,7 @@ olapicGallery.directive('galleryItemDirective', function() {
                 });
             }
 
-            jQuery('.main-square').not(':first').remove();
+            angular.element('.main-square').not(':first').remove();
 
         }
     };
@@ -121,6 +122,7 @@ olapicGallery.controller('galleryController', function($scope, $http) {
     $scope.imagesArray = [];
     $scope.charactersLimit = 14;
     $scope.mediaItemInfo = {};
+
 
 
     $http.get('https://api.olapic.com/customers/215757/media/recent?auth_token=0a40a13fd9d531110b4d6515ef0d6c529acdb59e81194132356a1b8903790c18&count=14&version=v2.2')
@@ -164,14 +166,14 @@ olapicGallery.controller('galleryController', function($scope, $http) {
             });
     };
 
-    jQuery('#navigation a').on('click', function() {
-        var urlLink = jQuery(this).data('url-link');
+    angular.element('#navigation a').on('click', function() {
+        var urlLink = angular.element(this).data('url-link');
         $scope.navigateMedia(urlLink);
     });
 
     $scope.showViewer = function() {
 
-        var $mediaViewer = jQuery('#media-viewer');
+        var $mediaViewer = angular.element('#media-viewer');
 
         console.log('click');
 
@@ -215,7 +217,7 @@ olapicGallery.controller('galleryController', function($scope, $http) {
 
 
         $mediaViewer.find('img').one('load', function() {
-            var img = jQuery(this).attr('src');
+            var img = angular.element(this).attr('src');
 
             $mediaViewer.find('.image').css('background-image', 'url(' + img + ')');
 
@@ -233,7 +235,7 @@ olapicGallery.controller('galleryController', function($scope, $http) {
                 display: 'block'
             });
 
-            jQuery('#media-viewer-overlay').velocity('fadeIn', 1000);
+            angular.element('#media-viewer-overlay').velocity('fadeIn', 1000);
 
             $mediaViewer.velocity(mediaViewerAnimation, 600);
 
@@ -273,10 +275,10 @@ olapicGallery.controller('galleryController', function($scope, $http) {
     };
 
 
-    jQuery('body').on('click', '#media-viewer-overlay, .close', function() {
+    angular.element('body').on('click', '#media-viewer-overlay, .close', function() {
 
 
-        var $mediaViewer = jQuery('#media-viewer');
+        var $mediaViewer = angular.element('#media-viewer');
 
 
 
@@ -324,7 +326,7 @@ olapicGallery.controller('galleryController', function($scope, $http) {
             maxWidth: ['500px', '800px']
         }, {
             duration: 400,
-            easing: 'easeInCubic'
+            easing: 'easeInExpo'
         }).find('.info').velocity({
             opacity: [0, 1]
         }, {
@@ -334,40 +336,38 @@ olapicGallery.controller('galleryController', function($scope, $http) {
                     duration: 1000,
                     easing: 'easeOutExpo'
                 }).find('.image').velocity(mediaViewerImageAnimation, {
-                        duration: 700,
+                        duration: 500,
                         complete: function() {
                             console.log('complete');
                             $mediaViewer.velocity({
                                 top: 0,
-                                left: 0,
-                                height: 0,
-                                width: 0
+                                left: 0
                             })
                         }
                     });
             }
         });
 
-        jQuery('#media-viewer-overlay').velocity('fadeOut', 500);
+        angular.element('#media-viewer-overlay').velocity('fadeOut', 500);
 
     });
 
 
 
-    jQuery('#gallery-wrapper').on('click', '.media-item-wrapper:not(.main-square)', function() {
+    angular.element('#gallery-wrapper').on('click', '.media-item-wrapper:not(.main-square)', function() {
 
 
-        $scope.mediaItemInfo.mediaItemPosition = jQuery(this).find('.media-item').offset();
-        $scope.mediaItemInfo.mediaID = jQuery(this).find('.media-item').data('media-id');
-        $scope.mediaItemInfo.mediaWidth= jQuery(this).css('width');
-        $scope.mediaItemInfo.mediaHeight = jQuery(this).css('height');
+        $scope.mediaItemInfo.mediaItemPosition = angular.element(this).find('.media-item').offset();
+        $scope.mediaItemInfo.mediaID = angular.element(this).find('.media-item').data('media-id');
+        $scope.mediaItemInfo.mediaWidth= angular.element(this).css('width');
+        $scope.mediaItemInfo.mediaHeight = angular.element(this).css('height');
 
 
-        if (jQuery(this).hasClass('item-6') || jQuery(this).hasClass('item-7') || jQuery(this).hasClass('item-8')) {
-            jQuery('#media-viewer').addClass('big');
+        if (angular.element(this).hasClass('item-6') || angular.element(this).hasClass('item-7') || angular.element(this).hasClass('item-8')) {
+            angular.element('#media-viewer').addClass('big');
             $scope.isBigViewer = true;
         } else {
-            jQuery('#media-viewer').removeClass('big');
+            angular.element('#media-viewer').removeClass('big');
             $scope.isBigViewer = false;
 
         }
